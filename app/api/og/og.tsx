@@ -1,5 +1,5 @@
 import { ImageResponse } from "@vercel/og";
-
+import { headers } from "next/headers";
 import { CSSProperties } from "react";
 import { ActiveDayIcon, BlogIcon, ForumIcon, XPIcon } from "./icons";
 
@@ -126,16 +126,17 @@ export async function generateOgImageResponse({
   type?: "article" | "forum" | "user";
   replies?: { id: string }[];
 }) {
+  const origin = (await headers()).get("origin")!;
   const fontData = await fetch(
-    new URL("/ogdata/Montserrat-Regular.ttf", process.env.URL)
+    new URL("/ogdata/Montserrat-Regular.ttf", origin)
   ).then((res) => res.arrayBuffer());
 
   const extrafontData = await fetch(
-    new URL("/ogdata/Montserrat-ExtraBold.ttf", process.env.URL)
+    new URL("/ogdata/Montserrat-ExtraBold.ttf", origin)
   ).then((res) => res.arrayBuffer());
-  const imageBuffer = await fetch(
-    new URL("/ogdata/logo.png", process.env.URL)
-  ).then((res) => res.arrayBuffer());
+  const imageBuffer = await fetch(new URL("/ogdata/logo.png", origin)).then(
+    (res) => res.arrayBuffer()
+  );
   const imageData =
     "data:image/png;base64," + Buffer.from(imageBuffer).toString("base64");
 
@@ -208,7 +209,7 @@ export async function generateOgImageResponse({
                 <img
                   src={
                     author.image ||
-                    `${process.env.URL}/api/avatar?username=${author.username}`
+                    `${origin}/api/avatar?username=${author.username}`
                   }
                   alt="Logo"
                   width="200"
@@ -424,8 +425,7 @@ export async function generateOgImageResponse({
             width="70"
             height="70"
             src={
-              author.image ||
-              `${process.env.URL}/api/avatar?username=${author.username}`
+              author.image || `${origin}/api/avatar?username=${author.username}`
             }
             style={styles.authorAvatar}
           />
