@@ -7,14 +7,13 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id } = await params;
-  const { data: post } = await await axios.get(
-    `${process.env.URL}/api/forum/${id}`
-  );
+  const { data: post } = await axios.get(`${process.env.URL}/api/forum/${id}`);
   if (!post) {
     return new Response("Not found", { status: 404 });
   }
+  console.log(post);
   const title = post.title;
-  const date = formatRelativeTime(post.createdAt);
+  const date = post.createdAt;
   return generateOgImageResponse({
     type: "forum",
     title,

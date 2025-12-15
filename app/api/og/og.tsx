@@ -127,14 +127,14 @@ export async function generateOgImageResponse({
   replies?: { id: string }[];
 }) {
   const fontData = await fetch(
-    new URL('/ogdata/Montserrat-Regular.ttf', process.env.BASE_URL)
+    new URL("/ogdata/Montserrat-Regular.ttf", process.env.URL)
   ).then((res) => res.arrayBuffer());
 
   const extrafontData = await fetch(
-    new URL('/ogdata/Montserrat-ExtraBold.ttf', process.env.BASE_URL)
+    new URL("/ogdata/Montserrat-ExtraBold.ttf", process.env.URL)
   ).then((res) => res.arrayBuffer());
   const imageBuffer = await fetch(
-    new URL('/ogdata/logo.png', process.env.BASE_URL)
+    new URL("/ogdata/logo.png", process.env.URL)
   ).then((res) => res.arrayBuffer());
   const imageData =
     "data:image/png;base64," + Buffer.from(imageBuffer).toString("base64");
@@ -208,7 +208,7 @@ export async function generateOgImageResponse({
                 <img
                   src={
                     author.image ||
-                    `${process.env.BASE_URL}/api/avatar?username=${author.username}`
+                    `${process.env.URL}/api/avatar?username=${author.username}`
                   }
                   alt="Logo"
                   width="200"
@@ -425,7 +425,7 @@ export async function generateOgImageResponse({
             height="70"
             src={
               author.image ||
-              `${process.env.BASE_URL}/api/avatar?username=${author.username}`
+              `${process.env.URL}/api/avatar?username=${author.username}`
             }
             style={styles.authorAvatar}
           />

@@ -8,12 +8,12 @@ export async function GET(
 ) {
   const { username } = await params;
   const { data: user } = await axios.get(
-    `${process.env.URL}/api/username/${username}`
+    `${process.env.URL}/api/user/${username}`
   );
   if (!user) {
     return new Response("Not found", { status: 404 });
   }
-  const date = formatRelativeTime(user.createdAt);
+  const date = "";
   return generateOgImageResponse({
     type: "user",
     title: "",
@@ -25,11 +25,6 @@ export async function GET(
       image: user.image || "",
       bio: user.bio!,
     },
-    stats: {
-      blogs: user.blogPosts.length,
-      forums: user.forumPosts.length,
-      active_day: user.activity.totalDaysActive,
-      xp: user.experiencePoints || 0,
-    },
+    stats: user.stats,
   });
 }
