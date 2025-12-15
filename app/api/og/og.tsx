@@ -2,6 +2,8 @@ import { ImageResponse } from "@vercel/og";
 import { headers } from "next/headers";
 import { CSSProperties } from "react";
 import { ActiveDayIcon, BlogIcon, ForumIcon, XPIcon } from "./icons";
+import fs from "fs/promises";
+import path from "path";
 
 const styles: Record<string, CSSProperties> = {
   container: {
@@ -126,19 +128,20 @@ export async function generateOgImageResponse({
   type?: "article" | "forum" | "user";
   replies?: { id: string }[];
 }) {
-  const origin = (await headers()).get("origin")!;
-  const fontData = await fetch(
-    new URL("/ogdata/Montserrat-Regular.ttf", origin)
-  ).then((res) => res.arrayBuffer());
-
-  const extrafontData = await fetch(
-    new URL("/ogdata/Montserrat-ExtraBold.ttf", origin)
-  ).then((res) => res.arrayBuffer());
-  const imageBuffer = await fetch(new URL("/ogdata/logo.png", origin)).then(
-    (res) => res.arrayBuffer()
+  const fontData = await fs.readFile(
+    path.join(process.cwd(), "public/ogdata/Montserrat-Regular.ttf")
   );
-  const imageData =
-    "data:image/png;base64," + Buffer.from(imageBuffer).toString("base64");
+
+  const extraFontData = await fs.readFile(
+    path.join(process.cwd(), "public/ogdata/Montserrat-ExtraBold.ttf")
+  );
+
+  const imageBuffer = await fs.readFile(
+    path.join(process.cwd(), "public/ogdata/logo.png")
+  );
+
+  const base64 = Buffer.from(imageBuffer).toString("base64");
+  const imageData = `data:image/png;base64,${base64}`;
 
   if (type === "user") {
     return new ImageResponse(
@@ -209,7 +212,7 @@ export async function generateOgImageResponse({
                 <img
                   src={
                     author.image ||
-                    `${origin}/api/avatar?username=${author.username}`
+                    `${process.env.URL}/api/avatar?username=${author.username}`
                   }
                   alt="Logo"
                   width="200"
@@ -374,7 +377,7 @@ export async function generateOgImageResponse({
           },
           {
             name: "montserrat-extrabold",
-            data: extrafontData,
+            data: extraFontData,
             style: "normal",
             weight: 800,
           },
@@ -425,7 +428,8 @@ export async function generateOgImageResponse({
             width="70"
             height="70"
             src={
-              author.image || `${origin}/api/avatar?username=${author.username}`
+              author.image ||
+              `${process.env.URL}/api/avatar?username=${author.username}`
             }
             style={styles.authorAvatar}
           />
@@ -466,7 +470,7 @@ export async function generateOgImageResponse({
         },
         {
           name: "montserrat-extrabold",
-          data: extrafontData,
+          data: extraFontData,
           style: "normal",
           weight: 800,
         },
