@@ -14,17 +14,18 @@ export async function GET(
     return new Response("Not found", { status: 404 });
   }
   const date = "";
-  return generateOgImageResponse({
-    type: "user",
-    title: "",
-    date,
-    replies: [],
-    author: {
-      name: user?.name || "Unknown",
-      username: user?.username || "Unknown",
-      image: user.image || "",
-      bio: user.bio!,
-    },
-    stats: user.stats,
-  });
+  return Response.json({ success: true }, { status: 200 });
+  // return generateOgImageResponse({
+  //   type: "user",
+  //   title: "",
+  //   date,
+  //   replies: [],
+  //   author: {
+  //     name: user?.name || "Unknown",
+  //     username: user?.username || "Unknown",
+  //     image: user.image || "",
+  //     bio: user.bio!,
+  //   },
+  //   stats: user.stats,
+  // });
 }
