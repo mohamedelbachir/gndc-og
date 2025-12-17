@@ -1,5 +1,6 @@
 import { ImageResponse } from "@vercel/og";
-
+import { promises as fs } from "fs";
+import path from "path";
 import { CSSProperties } from "react";
 import { ActiveDayIcon, BlogIcon, ForumIcon, XPIcon } from "./icons";
 
@@ -127,26 +128,27 @@ export async function generateOgImageResponse({
   replies?: { id: string }[];
 }) {
   try {
-    const fontData = await fetch(
-      new URL("/ogdata/Montserrat-Regular.ttf", process.env.URL)
-    ).then((res) => res.arrayBuffer());
+    let f = path.join(
+      process.cwd(),
+      "public",
+      "/ogdata/Montserrat-Regular.ttf"
+    );
+    const fontData = await fs.readFile(f);
 
-    console.log({ fontData });
+    //console.log({ fontData });
 
-    const extrafontData = await fetch(
-      new URL("/ogdata/Montserrat-ExtraBold.ttf", process.env.URL)
-    ).then((res) => res.arrayBuffer());
-    console.log({ extrafontData });
+    f = path.join(process.cwd(), "public", "/ogdata/Montserrat-ExtraBold.ttf");
+    const extrafontData = await fs.readFile(f);
+    // console.log({ extrafontData });
 
-    const imageBuffer = await fetch(
-      new URL("/ogdata/logo.png", process.env.URL)
-    ).then((res) => res.arrayBuffer());
-    console.log({ imageBuffer });
+    f = path.join(process.cwd(), "public", "/ogdata/logo.png");
+    const imageBuffer = await fs.readFile(f);
+    // console.log({ imageBuffer });
 
     const imageData =
       "data:image/png;base64," + Buffer.from(imageBuffer).toString("base64");
-    console.log({ imageData });
-
+    // console.log({ imageData });
+    return Response.json({ success: true }, { status: 200 });
     if (type === "user") {
       console.log("response");
       return new ImageResponse(
@@ -240,8 +242,8 @@ export async function generateOgImageResponse({
                 {(() => {
                   const charsPerLine = 50;
                   const maxChars = charsPerLine * 2;
-                  if (author.bio && author.bio.length > maxChars) {
-                    return author.bio.slice(0, maxChars - 1) + "…";
+                  if (author.bio && author?.bio!.length > maxChars) {
+                    return author?.bio!.slice(0, maxChars - 1) + "…";
                   }
                   return author.bio || "Pas de bio!";
                 })()}
@@ -484,6 +486,6 @@ export async function generateOgImageResponse({
     );
   } catch (e) {
     console.log("error");
-    return Response.json(e, { status: 500 });
+    return Response.json(e, { status: 400 });
   }
 }
