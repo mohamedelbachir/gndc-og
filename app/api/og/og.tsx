@@ -128,21 +128,20 @@ export async function generateOgImageResponse({
   replies?: { id: string }[];
 }) {
   try {
-    let f = path.join(
-      process.cwd(),
-      "public",
-      "/ogdata/Montserrat-Regular.ttf"
-    );
-    const fontData = await fs.readFile(f);
+    const fontData = await fetch(
+      new URL("../../public/ogdata/Montserrat-Regular.ttf", import.meta.url)
+    ).then((res) => res.arrayBuffer());
 
     //console.log({ fontData });
 
-    f = path.join(process.cwd(), "public", "/ogdata/Montserrat-ExtraBold.ttf");
-    const extrafontData = await fs.readFile(f);
+    const extrafontData = await fetch(
+      new URL("../../public/ogdata/Montserrat-ExtraBold.ttf", import.meta.url)
+    ).then((res) => res.arrayBuffer());
     // console.log({ extrafontData });
 
-    f = path.join(process.cwd(), "public", "/ogdata/logo.png");
-    const imageBuffer = await fs.readFile(f);
+    const imageBuffer = await fetch(
+      new URL("../../public/ogdata/logo.png", import.meta.url)
+    ).then((res) => res.arrayBuffer());
     // console.log({ imageBuffer });
 
     const imageData =
