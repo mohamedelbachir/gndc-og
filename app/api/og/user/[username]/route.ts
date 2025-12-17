@@ -14,6 +14,7 @@ export async function GET(
     return new Response("Not found", { status: 404 });
   }
   const date = "";
+  console.log(user);
   return generateOgImageResponse({
     type: "user",
     title: "",
